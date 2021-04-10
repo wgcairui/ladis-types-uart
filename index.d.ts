@@ -1,4 +1,4 @@
-
+/// <reference types="node" />
 declare namespace Uart {
     /** protocol */
     type communicationType = 232 | 485;

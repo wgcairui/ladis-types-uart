@@ -1,12 +1,12 @@
 {
   "name": "types-uart",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "types": "index.d.ts",
+  "typeScriptVersion": "4.0",
   "scripts": {},
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^14.14.37"
   }
 }
