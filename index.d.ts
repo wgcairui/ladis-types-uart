@@ -95,6 +95,7 @@ declare namespace Uart {
         tag?: string[];
         DevMac: string
         online?: boolean
+        disable?: boolean
         mountNode: string
         name: string;
         ip?: string
@@ -162,6 +163,7 @@ declare namespace Uart {
     interface queryResultArgument {
         name: string;
         value: any;
+        parseValue: string;
         unit: string | null;
         issimulate?: boolean
         alarm?: boolean
@@ -382,6 +384,7 @@ declare namespace Uart {
 
     // 透传设备告警对象
     interface uartAlarmObject {
+        parentId?: string
         mac: string
         devName: string
         pid: number
@@ -395,6 +398,7 @@ declare namespace Uart {
     // 单条发送短信
     type UartAlarmType = "透传设备下线提醒" | "透传设备上线提醒" | '透传设备告警'
     interface smsUartAlarm {
+        parentId?: string
         user: string
         tel: string
         name: string
@@ -461,7 +465,7 @@ declare namespace Uart {
         msg: string
     }
     // 节点连接断开等事件
-    type logNodesType = "连接" | "断开" | "非法连接请求" | "TcpServer启动失败" | "告警"
+    type logNodesType = "连接" | "断开" | "上线" | "重新上线" | "非法连接请求" | "TcpServer启动失败" | "告警" | "重新连接" | "节点断开" | "dtu主动断开" | "dtu断开"
     interface logNodes {
         ID: string
         IP: string
@@ -469,7 +473,7 @@ declare namespace Uart {
         type: logNodesType
     }
     // 终端连接
-    type logTerminalsType = "连接" | "断开" | "查询超时" | "查询恢复" | "操作设备" | "操作设备结果" | 'DTU操作'
+    type logTerminalsType = "连接" | "断开" | "查询超时" | "查询恢复" | "操作设备" | "操作设备结果" | 'DTU操作' | "重新连接" | "dtu主动断开" | "dtu断开"
     interface logTerminals {
         NodeIP: string
         NodeName: string
@@ -490,12 +494,10 @@ declare namespace Uart {
 
     // 设备流量使用量
     interface logDtuBusy {
-        "_id": any
         mac: string
-        date: boolean
+        stat: boolean
         n: number
         timeStamp: number
-        "__v": number
     }
 
     // 聚合设备
