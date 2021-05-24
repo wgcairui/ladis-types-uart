@@ -1,4 +1,6 @@
 /// <reference types="node" />
+
+import { EChartOption } from "echarts"
 declare namespace Uart {
     /** protocol */
     type communicationType = 232 | 485;
@@ -26,10 +28,10 @@ declare namespace Uart {
 
     /** page auery */
     interface PageQuery {
-        DevMac: String,
-        pid: String,
-        mountDev: String,
-        protocol: String
+        DevMac: string,
+        pid: string,
+        mountDev: string,
+        protocol: string
     }
 
     /**  协议指令解析格式化 */
@@ -473,7 +475,7 @@ declare namespace Uart {
         type: logNodesType
     }
     // 终端连接
-    type logTerminalsType = "连接" | "断开" | "查询超时" | "查询恢复" | "操作设备" | "操作设备结果" | 'DTU操作' | "重新连接" | "dtu主动断开" | "dtu断开"
+    type logTerminalsType = "连接" | "断开" | "查询超时" | "查询恢复" | "操作设备" | "操作设备结果" | 'DTU操作' | "重新连接" | "节点断开" | "dtu主动断开" | "dtu断开"
     interface logTerminals {
         NodeIP: string
         NodeName: string
@@ -663,5 +665,47 @@ declare namespace Uart {
         interface convert extends statu {
             locations: string
         }
+    }
+
+    namespace VeChart {
+        interface unit {
+            name: string
+            data: number | number[] | any
+        }
+        interface stand {
+            dimensions?: {
+                name: string
+                data: (string | number)[]
+            }
+            measures: unit[]
+        }
+
+        interface line extends stand {
+            dimensions: {
+                name: string
+                data: (string | number)[]
+            }
+            measures: {
+                name: string
+                data: number[]
+            }[]
+        }
+
+        type pie = line
+        interface guageData extends stand {
+            dimensions?: {
+                name: string
+                data: (string | number)[]
+            }
+            measures: {
+                name: string
+                data: {
+                    name: string,
+                    value: number
+                }[]
+            }[]
+        }
+
+        type setting = EChartOption.Series
     }
 }
