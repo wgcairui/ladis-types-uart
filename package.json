@@ -1,6 +1,6 @@
 {
   "name": "types-uart",
-  "version": "1.0.8",
+  "version": "1.0.91",
   "description": "",
   "types": "index.d.ts",
   "typeScriptVersion": "4.0",
@@ -8,7 +8,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/echarts": "^4.9.7",
     "@types/node": "^15.6.0"
   }
 }

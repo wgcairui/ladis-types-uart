@@ -1,6 +1,5 @@
 /// <reference types="node" />
-
-import { EChartOption } from "echarts"
+/// <reference types="echarts" />
 declare namespace Uart {
     /** protocol */
     type communicationType = 232 | 485;
@@ -706,6 +705,6 @@ declare namespace Uart {
             }[]
         }
 
-        type setting = EChartOption.Series
+        type setting = echarts.EChartOption.Series
     }
 }
