@@ -130,6 +130,7 @@ declare namespace Uart {
         user: string
         ECs: string[]
         UTs: (string | Terminal)[]
+        AGG: string[]
     }
 
     /** Node节点硬件top */
@@ -254,6 +255,18 @@ declare namespace Uart {
         status?: boolean;
         // 注册类型
         rgtype: registerType
+        /**
+         * 小程序id
+         */
+        wpId?: string,
+        /**
+         * 公众号id
+         */
+        wxId?: string,
+        /**
+         * 开放平台id
+         */
+        openId?: string
     }
 
     // 设备协议参数-常量
@@ -570,7 +583,395 @@ declare namespace Uart {
         interface wxRequest {
             errcode?: number
             errmsg?: string
+            [x: string]: any
         }
+
+
+        interface wxValidation {
+            signature: string,
+            timestamp: string,
+            nonce: string,
+            echostr: string
+        }
+
+        /**
+         * 关注,取消关注
+         * https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_event_pushes.html
+         */
+        type pushEvent = 'subscribe' | 'unsubscribe' | 'SCAN' | 'LOCATION' | 'CLICK' | 'VIEW'
+
+        /**
+         * 服务端接收的微信事件推送
+         */
+        interface WxEvent {
+            /**
+             * 开发者 微信号
+             */
+            ToUserName: string,
+            /**
+             * 发送方帐号（一个OpenID）
+             */
+            FromUserName: string,
+            /**
+             * 消息创建时间 （整型）
+             */
+            CreateTime: string,
+            /**
+             * 消息类型，event
+             */
+            MsgType: string,
+            /**
+             * 事件类型，VIEW
+             */
+            Event?: pushEvent & string,
+            /**
+             * 事件KEY值，设置的跳转URL
+             */
+            EventKey?: string
+            /**
+             * 文本消息内容
+             */
+            Content?: string
+            /**
+             * 指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了
+             */
+
+            MenuID?: string
+            /**
+             * 扫描信息
+             */
+            ScanCodeInfo?: any
+            /**
+             * 扫描类型，一般是qrcode
+             */
+            ScanType?: string,
+            /**
+             * 扫描结果，即二维码对应的字符串信息
+             */
+            ScanResult?: string
+            /**
+             * 发送的图片信息
+             */
+            SendPicsInfo?: any
+            /**
+             * 发送的图片数量
+             */
+            Count?: number,
+            /**
+             * 图片列表
+             */
+            PicList?: any[],
+            /**
+             * 图片的MD5值，开发者若需要，可用于验证接收到图片
+             */
+            PicMd5Sum?: string
+            /**
+             * 二维码ticket
+             */
+            Ticket?: string
+        }
+
+        /**
+            * 生成带参数的二维码
+            * https://developers.weixin.qq.com/doc/offiaccount/Account_Management/Generating_a_Parametric_QR_Code.html
+        */
+        interface ticketPublic extends wxRequest {
+            /**
+             * 获取的二维码ticket，凭借此ticket可以在有效时间内换取二维码
+             */
+            ticket: string
+            /**
+             * 该二维码有效时间，以秒为单位。 最大不超过2592000（即30天）
+             */
+            expire_seconds: number,
+            /**
+             * 二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片
+             */
+            url: string
+        }
+
+        /**
+         * 永久消息素材列表
+         */
+        interface materials_list extends wxRequest {
+            /**
+             * 该类型的素材的总数
+             */
+            "total_count": number
+            /**
+             * 本次调用获取的素材的数量
+             */
+            "item_count": number
+            "item": {
+                "media_id": string
+                "content"?: {
+                    "news_item": {
+                        /**
+                         * 图文消息的标题
+                         */
+                        "title": string
+                        /**
+                         * 图文消息的封面图片素材id（必须是永久mediaID）
+                         */
+                        "thumb_media_id": string
+                        /**
+                         * 是否显示封面，0为false，即不显示，1为true，即显示
+                         */
+                        "show_cover_pic": string
+                        /**
+                         * 作者
+                         */
+                        "author": string
+                        /**
+                         * 图文消息的摘要，仅有单图文消息才有摘要，多图文此处为空
+                         */
+                        "digest": string
+                        /**
+                         * 图文消息的具体内容，支持HTML标签，必须少于2万字符，小于1M，且此处会去除JS
+                         */
+                        "content": string
+                        /**
+                         * 图文页的URL，或者，当获取的列表是图片素材列表时，该字段是图片的URL
+                         */
+                        "url": string
+                        /**
+                         * 图文消息的原文地址，即点击“阅读原文”后的URL
+                         */
+                        "content_source_url": string
+                    }[]
+                }
+                /**
+                 * 文件名称
+                 */
+                "name"?: string
+                /**
+                 * 图文页的URL，或者，当获取的列表是图片素材列表时，该字段是图片的URL
+                 */
+                "url"?: string
+                /**
+                 * 这篇图文消息素材的最后更新时间
+                 */
+                "update_time": string
+            }[]
+        }
+
+        /**
+         * 微信网页授权登录
+         * https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html
+         */
+        interface webLogin extends wxRequest {
+            /**
+             * 接口调用凭证
+             */
+            "access_token": string
+            /**
+             * access_token接口调用凭证超时时间，单位（秒）
+             */
+            "expires_in": number
+            /**
+             * 用户刷新access_token
+             */
+            "refresh_token": string
+            /**
+             * 授权用户唯一标识
+             */
+            "openid": string
+            /**
+             * 用户授权的作用域，使用逗号（,）分隔
+             */
+            "scope": string
+            /**
+             * 当且仅当该网站应用已获得该用户的userinfo授权时，才会出现该字段。
+             */
+            "unionid"?: string
+        }
+
+        /**
+         * 微信开发者返回的用户信息
+         */
+        interface webUserInfo extends wxRequest {
+            /**
+             * 普通用户的标识，对当前开发者帐号唯一
+             */
+            "openid": string
+            /**
+             * 普通用户昵称
+             */
+            "nickname": string
+            /**
+             * 普通用户性别，1为男性，2为女性
+             */
+            "sex": 0 | 1 | 2
+            /**
+             * 普通用户个人资料填写的省份
+             */
+            "province": string
+            /**
+             * 普通用户个人资料填写的城市
+             */
+            "city": string
+            /**
+             * 国家，如中国为CN
+             */
+            "country": string
+            /**
+             * 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
+             */
+            "headimgurl": string
+            /**
+             * 用户特权信息，json数组，如微信沃卡用户为（chinaunicom）
+             */
+            "privilege": string[]
+            /**
+             * 用户统一标识。针对一个微信开放平台帐号下的应用，同一用户的unionid是唯一的。
+             */
+            "unionid": string
+
+        }
+
+
+        interface menu_sub {
+            /**
+             * 菜单的响应动作类型，view表示网页类型，click表示点击类型，miniprogram表示小程序类型
+             */
+            type: "click" | 'view' | 'miniprogram' | 'scancode_push' | 'scancode_waitmsg' | 'pic_sysphoto' | 'pic_photo_or_album' | 'pic_weixin' | 'location_select' | 'media_id' | 'view_limited',
+            /**
+             * 菜单标题，不超过16个字节，子菜单不超过60个字节
+             */
+            name: string,
+            /**
+             * 菜单KEY值，用于消息接口推送，不超过128字节
+             */
+            key?: string,
+            /**
+             * view、miniprogram类型必须
+             * 网页 链接，用户点击菜单可打开链接，不超过1024字节。 type为miniprogram时，不支持小程序的老版本客户端将打开本url
+             */
+            url?: string,
+            /**
+             * miniprogram类型必须
+             * 小程序的appid（仅认证公众号可配置）
+             */
+            appid?: string,
+            /**
+             * miniprogram类型必须
+             * 小程序的页面路径
+             */
+            pagepath?: string
+            /**
+             * media_id类型和view_limited类型必须
+             * 调用新增永久素材接口返回的合法media_id
+             */
+            media_id?: string
+        }
+
+        /**
+         * 公众号自定义菜单接口
+         * https://developers.weixin.qq.com/doc/offiaccount/Custom_Menus/Creating_Custom-Defined_Menu.html
+         */
+        interface menu {
+            /**
+             * 一级菜单数组，个数应为1~3个
+             */
+            button: {
+                name: string,
+                /**
+                 * 二级菜单数组，个数应为1~5个
+                 */
+                sub_button: menu_sub[]
+            }[]
+        }
+
+        interface userInfoPublic extends webUserInfo {
+            /**
+             * 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息
+             */
+            "subscribe": 0 | 1
+            /**
+             * 用户的标识，对当前公众号唯一
+             */
+            "openid": string
+            /**
+             * 用户的昵称
+             */
+            "nickname": string
+            /**
+             * 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+             */
+            "sex": 0 | 1 | 2,
+            /**
+             * 用户的语言，简体中文为zh_CN
+             */
+            "language": string
+            /**
+             * 用户所在城市
+             */
+            "city": string
+            /**
+             * 用户所在省份
+             */
+            "province": string
+            /**
+             * 用户所在国家
+             */
+            "country": string
+            /**
+             * 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空。若用户更换头像，原有头像URL将失效。
+             */
+            "headimgurl": string
+            /**
+             * 用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间
+             */
+            "subscribe_time": number
+            /**
+             * 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
+             */
+            "unionid": string
+            /**
+             * 公众号运营者对粉丝的备注，公众号运营者可在微信公众平台用户管理界面对粉丝添加备注
+             */
+            "remark": string
+            /**
+             * 用户所在的分组ID（兼容旧的用户分组接口）
+             */
+            "groupid": number
+            /**
+             * 户被打上的标签ID列表
+             */
+            "tagid_list": number[]
+            /**
+             * 返回用户关注的渠道来源，ADD_SCENE_SEARCH 公众号搜索，ADD_SCENE_ACCOUNT_MIGRATION 公众号迁移，ADD_SCENE_PROFILE_CARD 名片分享，ADD_SCENE_QR_CODE 扫描二维码，ADD_SCENE_PROFILE_LINK 图文页内名称点击，ADD_SCENE_PROFILE_ITEM 图文页右上角菜单，ADD_SCENE_PAID 支付后关注，ADD_SCENE_WECHAT_ADVERTISEMENT 微信广告，ADD_SCENE_OTHERS 其他
+             */
+            "subscribe_scene": "ADD_SCENE_SEARCH" | "ADD_SCENE_ACCOUNT_MIGRATION" | "ADD_SCENE_PROFILE_CARD" | "ADD_SCENE_QR_CODE" | "ADD_SCENE_PROFILE_LINK" | "ADD_SCENE_PROFILE_ITEM" | "ADD_SCENE_PAID" | "ADD_SCENE_WECHAT_ADVERTISEMENT" | "ADD_SCENE_OTHERS"
+            "qr_scene": number
+            "qr_scene_str": string
+        }
+
+
+        /**
+         * 公众号用户列表
+         */
+        interface userlistPublic extends wxRequest {
+            /**
+             * 关注该公众账号的总用户数
+             */
+            "total": number
+            /**
+             * 拉取的OPENID个数，最大值为10000
+             */
+            "count": number
+            /**
+             * 列表数据，OPENID的列表
+             */
+            "data": {
+                "openid": string[]
+            },
+            /**
+             * 拉取列表的最后一个用户的OPENID
+             */
+            "next_openid": string
+        }
+
         /**
          * 微信服务端返回的appid 
          * https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
