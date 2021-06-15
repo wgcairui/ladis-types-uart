@@ -1,10 +1,32 @@
 /// <reference types="node" />
-/// <reference types="echarts" />
 declare namespace Uart {
+
+
     /** protocol */
     type communicationType = 232 | 485;
     type protocolType = "ups" | "air" | "em" | "th";
     type characterType = "utf8" | "hex" | "float" | "short" | "int" | "HX" | 'bit2'
+    type secretType = "mail" | "aliSms" | "hf" | "wxopen" | "wxmp" | "wxwp" | "wxmpValidaton"
+    /**
+    * 密匙,第三方应用密匙
+    */
+    interface Secret_app {
+        type: secretType & string
+        appid: string
+        secret: string
+    }
+
+
+    /**
+     * token信息
+     */
+    interface Token {
+        type: string,
+        token: string,
+        expires: number,
+        creatTime: number
+    }
+
     interface ApolloMongoResult {
         msg: string
         ok: number
@@ -997,18 +1019,57 @@ declare namespace Uart {
          */
 
         interface wxsubscribeMessage {
+            /**
+             * 接收者openid
+             */
             touser: string
+            /**
+             * 模板ID
+             */
             template_id: string
+            /**
+             * 模板跳转链接（海外帐号没有跳转能力）
+             */
+            url?: string
+            /**
+             * 
+             */
             page?: string
+            /**
+             * 
+             */
             miniprogram_state?: 'developer' | 'trial' | 'formal'
             lang?: string
+            /**
+             * 跳小程序所需数据，不需跳小程序可不用传该数据
+             */
             miniprogram?: {
+                /**
+                 * 所需跳转到的小程序appid（该小程序appid必须与发模板消息的公众号是绑定关联关系，暂不支持小游戏）
+                 */
                 appid: string
+                /**
+                 * 所需跳转到小程序的具体页面路径，支持带参数,（示例index?foo=bar），要求该小程序已发布，暂不支持小游戏
+                 */
                 pagepath?: string
             }
+
+            /**
+             * 模板数据
+             */
             data: {
+                /**
+                 * 参数名称
+                 */
                 [x: string]: {
+                    /**
+                     * 参数的值
+                     */
                     value: string
+                    /**
+                     * 模板内容字体颜色，不填默认为黑色
+                     */
+                    color?: string
                 }
             }
         }
@@ -1105,7 +1166,5 @@ declare namespace Uart {
                 }[]
             }[]
         }
-
-        type setting = echarts.EChartOption.Series
     }
 }
