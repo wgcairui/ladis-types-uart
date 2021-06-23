@@ -37,15 +37,7 @@ declare namespace Uart {
     }
 
 
-    /** apollo ctx */
-    interface ApolloCtx extends UserInfo {
-        loggedIn: boolean
-        $Event: Event
-        $token: string
-        operationName: string
-        req: Request
-        language: string
-    }
+ 
 
     /** page auery */
     interface PageQuery {
@@ -102,8 +94,18 @@ declare namespace Uart {
     }
     /** 登记注册终端 */
     interface RegisterTerminal {
+        /**
+         * 设备mac
+         */
         DevMac: string;
+        /**
+         * 挂载节点
+         */
         mountNode: string;
+        /**
+         * 绑定安装设备编号Í
+         */
+        bindDev?:string;
     }
     /** 终端挂载设备 */
     interface TerminalMountDevs {
