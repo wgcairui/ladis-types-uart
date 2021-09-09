@@ -37,7 +37,7 @@ declare namespace Uart {
     }
 
 
- 
+
 
     /** page auery */
     interface PageQuery {
@@ -105,7 +105,7 @@ declare namespace Uart {
         /**
          * 绑定安装设备编号Í
          */
-        bindDev?:string;
+        bindDev?: string;
     }
     /** 终端挂载设备 */
     interface TerminalMountDevs {
@@ -114,9 +114,64 @@ declare namespace Uart {
         mountDev: string;
         protocol: string;
         pid: number;
+        /**
+         * 绑定安装设备编号Í
+         */
+        bindDev?: string;
+    }
+
+    /**
+     * iccd物联卡信息
+     */
+    interface iccidInfo {
+        /**
+         * 状态
+         */
+        statu?: boolean
+        /**
+         * 语音套餐总量，以分钟为单位
+         */
+        VoiceTotal: number,
+        /**
+         * 	资源失效日期
+         */
+        ExpireDate: string,
+        /**
+         * 资源名称
+         */
+        ResName: string,
+        /**
+         * 资源类型编码。6700001代表流量
+         */
+        ResourceType: string,
+        /**
+         * 资源使用量，流量单位为KB
+         */
+        FlowUsed: number,
+        /**
+         * 资源剩余量，流量单位为KB
+         */
+        RestOfFlow: number,
+        /**
+         * 短信使用量。以条为单位
+         */
+        SmsUsed: number,
+        /**
+         * 资源生效日期
+         */
+        ValidDate: string,
+        /**
+         * 语音使用量，以分钟为单位
+         */
+        VoiceUsed: number,
+        /**
+         * 资源总量 ，流量单位为KB
+         */
+        FlowResource: number
     }
     /** 终端 */
     interface Terminal extends RegisterTerminal {
+        _id: string
         tag?: string[];
         DevMac: string
         online?: boolean
@@ -136,10 +191,22 @@ declare namespace Uart {
         iotStat?: string,
         ICCID?: string
         mountDevs: TerminalMountDevs[];
+
+        /**
+         * iccid信息
+         */
+        iccidInfo?: iccidInfo[]
     }
     interface TerminalMountDevsEX extends TerminalMountDevs {
         TerminalMac: string
         Interval: number
+    }
+
+    /**
+     * 注册设备
+     */
+    interface registerDev extends TerminalMountDevs {
+        id: string
     }
     /** Node节点 */
     interface NodeClient {
@@ -153,7 +220,7 @@ declare namespace Uart {
     interface BindDevice {
         user: string
         ECs: string[]
-        UTs: (string | Terminal)[]
+        UTs: Terminal[]
         AGG: string[]
     }
 
@@ -260,7 +327,7 @@ declare namespace Uart {
         version: string
     }
 
-    type registerType = "wx" | "web" | "app"
+    type registerType = "wx" | "web" | "app" | "pesiv"
 
     /** 用户信息 */
     interface UserInfo {
