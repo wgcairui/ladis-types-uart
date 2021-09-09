@@ -127,47 +127,47 @@ declare namespace Uart {
         /**
          * 状态
          */
-        statu?: boolean
+        statu: boolean
         /**
          * 语音套餐总量，以分钟为单位
          */
-        VoiceTotal: number,
+        voiceTotal: number,
         /**
          * 	资源失效日期
          */
-        ExpireDate: string,
+        expireDate: string,
         /**
          * 资源名称
          */
-        ResName: string,
+        resName: string,
         /**
          * 资源类型编码。6700001代表流量
          */
-        ResourceType: string,
+        resourceType: string,
         /**
          * 资源使用量，流量单位为KB
          */
-        FlowUsed: number,
+        flowUsed: number,
         /**
          * 资源剩余量，流量单位为KB
          */
-        RestOfFlow: number,
+        restOfFlow: number,
         /**
          * 短信使用量。以条为单位
          */
-        SmsUsed: number,
+        smsUsed: number,
         /**
          * 资源生效日期
          */
-        ValidDate: string,
+        validDate: string,
         /**
          * 语音使用量，以分钟为单位
          */
-        VoiceUsed: number,
+        voiceUsed: number,
         /**
          * 资源总量 ，流量单位为KB
          */
-        FlowResource: number
+        flowResource: number
     }
     /** 终端 */
     interface Terminal extends RegisterTerminal {
