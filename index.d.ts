@@ -195,7 +195,7 @@ declare namespace Uart {
         /**
          * iccid信息
          */
-        iccidInfo?: iccidInfo[]
+        iccidInfo?: iccidInfo
     }
     interface TerminalMountDevsEX extends TerminalMountDevs {
         TerminalMac: string
