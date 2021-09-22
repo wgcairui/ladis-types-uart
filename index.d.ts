@@ -358,6 +358,10 @@ declare namespace Uart {
          * 开放平台id
          */
         openId?: string
+        /**
+         * proxy转发域名
+         */
+        proxy?: string
     }
 
     // 设备协议参数-常量
