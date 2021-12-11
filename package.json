@@ -4,7 +4,9 @@
   "description": "",
   "types": "index.d.ts",
   "typeScriptVersion": "4.0",
-  "scripts": {},
+  "scripts": {
+    "publish": "npm publish"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
