@@ -11,7 +11,7 @@ declare namespace Uart {
     * 密匙,第三方应用密匙
     */
     interface Secret_app {
-        type: secretType & string
+        type: secretType 
         appid: string
         secret: string
     }
@@ -75,6 +75,10 @@ declare namespace Uart {
         scriptStart: string,
         // 后处理脚本
         scriptEnd: string
+        /**
+         * 备注
+         */
+        remark?:string
     }
     /** 协议 */
     interface protocol {
@@ -82,6 +86,10 @@ declare namespace Uart {
         Protocol: string;
         ProtocolType: protocolType;
         instruct: protocolInstruct[];
+        /**
+         * 备注
+         */
+         remark?:string
     }
     /** 设备类型 */
     interface DevsType {
@@ -91,6 +99,10 @@ declare namespace Uart {
             Type: communicationType;
             Protocol: string;
         }[];
+        /**
+         * 备注
+         */
+         remark?:string
     }
     /** 登记注册终端 */
     interface RegisterTerminal {
@@ -106,6 +118,10 @@ declare namespace Uart {
          * 绑定安装设备编号Í
          */
         bindDev?: string;
+        /**
+         * 备注
+         */
+         remark?:string
     }
     /** 终端挂载设备 */
     interface TerminalMountDevs {
@@ -215,6 +231,10 @@ declare namespace Uart {
         Port: number;
         MaxConnections: number;
         count?: number
+        /**
+         * 备注
+         */
+         remark?:string
     }
     /** 用户绑定设备 */
     interface BindDevice {
@@ -362,6 +382,10 @@ declare namespace Uart {
          * proxy转发域名
          */
         proxy?: string
+        /**
+         * 备注
+         */
+         remark?:string
     }
 
     // 设备协议参数-常量
@@ -407,7 +431,12 @@ declare namespace Uart {
         di: string[];
         do: string[];
     }
-    interface DevConstant extends DevConstant_Air, DevConstant_EM, DevConstant_TH, DevConstant_Ups, DevConstant_IO { }
+    interface DevConstant extends DevConstant_Air, DevConstant_EM, DevConstant_TH, DevConstant_Ups, DevConstant_IO {
+        /**
+         * 备注
+         */
+         remark?:string
+     }
     // 协议参数阀值
     interface Threshold {
         name: string
@@ -631,6 +660,10 @@ declare namespace Uart {
         name: string
         aggregations: AggregationDev[]
         devs: AggregationDevParse[]
+        /**
+         * 备注
+         */
+         remark?:string
     }
 
 
