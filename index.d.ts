@@ -11,11 +11,16 @@ declare namespace Uart {
     * 密匙,第三方应用密匙
     */
     interface Secret_app {
-        type: secretType 
+        type: secretType
         appid: string
         secret: string
+
+        _id?: string
     }
 
+    interface id {
+        _id?: string
+    }
 
     /**
      * token信息
@@ -78,7 +83,7 @@ declare namespace Uart {
         /**
          * 备注
          */
-        remark?:string
+        remark?: string
     }
     /** 协议 */
     interface protocol {
@@ -89,7 +94,8 @@ declare namespace Uart {
         /**
          * 备注
          */
-         remark?:string
+        remark?: string
+        _id?: string
     }
     /** 设备类型 */
     interface DevsType {
@@ -102,7 +108,8 @@ declare namespace Uart {
         /**
          * 备注
          */
-         remark?:string
+        remark?: string
+        _id?: string
     }
     /** 登记注册终端 */
     interface RegisterTerminal {
@@ -121,7 +128,8 @@ declare namespace Uart {
         /**
          * 备注
          */
-         remark?:string
+        remark?: string
+        _id?: string
     }
     /** 终端挂载设备 */
     interface TerminalMountDevs {
@@ -234,7 +242,8 @@ declare namespace Uart {
         /**
          * 备注
          */
-         remark?:string
+        remark?: string
+        _id?: string
     }
     /** 用户绑定设备 */
     interface BindDevice {
@@ -242,6 +251,7 @@ declare namespace Uart {
         ECs: string[]
         UTs: Terminal[]
         AGG: string[]
+        _id?: string
     }
 
     /** Node节点硬件top */
@@ -385,7 +395,8 @@ declare namespace Uart {
         /**
          * 备注
          */
-         remark?:string
+        remark?: string
+        _id?: string
     }
 
     // 设备协议参数-常量
@@ -435,8 +446,9 @@ declare namespace Uart {
         /**
          * 备注
          */
-         remark?:string
-     }
+        remark?: string
+        _id?: string
+    }
     // 协议参数阀值
     interface Threshold {
         name: string
@@ -547,7 +559,7 @@ declare namespace Uart {
     }
     // LOG 日志
     // 短信发送
-    interface logSmsSend {
+    interface logSmsSend extends id {
         tels: string[]
         sendParams: {
             RegionId: string
@@ -576,7 +588,7 @@ declare namespace Uart {
         messageId: string
     }
 
-    interface logMailSend {
+    interface logMailSend extends id {
         mails: string[]
         sendParams: {
             from: string
@@ -588,7 +600,7 @@ declare namespace Uart {
         Error?: any
     }
     // 操作请求
-    interface logUserRequst {
+    interface logUserRequst extends id {
         user: string,
         userGroup: string,
         type: string,
@@ -596,7 +608,7 @@ declare namespace Uart {
     }
     type logLogins = "用户登陆" | '用户登出' | '用户注册' | "用户重置密码" | "用户修改信息"
     // 用户登陆登出请求
-    interface logUserLogins {
+    interface logUserLogins extends id {
         user: string,
         type: logLogins,
         address: string
@@ -604,7 +616,7 @@ declare namespace Uart {
     }
     // 节点连接断开等事件
     type logNodesType = "连接" | "断开" | "上线" | "重新上线" | "非法连接请求" | "TcpServer启动失败" | "告警" | "重新连接" | "节点断开" | "dtu主动断开" | "dtu断开"
-    interface logNodes {
+    interface logNodes extends id {
         ID: string
         IP: string
         Name: string
@@ -612,7 +624,7 @@ declare namespace Uart {
     }
     // 终端连接
     type logTerminalsType = "连接" | "断开" | "查询超时" | "查询恢复" | "操作设备" | "操作设备结果" | 'DTU操作' | "重新连接" | "节点断开" | "dtu主动断开" | "dtu断开"
-    interface logTerminals {
+    interface logTerminals extends id {
         NodeIP: string
         NodeName: string
         TerminalMac: string
@@ -624,14 +636,14 @@ declare namespace Uart {
     }
 
     // 设备流量使用量
-    interface logTerminaluseBytes {
+    interface logTerminaluseBytes extends id {
         mac: string
         date: string
         useBytes: number
     }
 
     // 设备流量使用量
-    interface logDtuBusy {
+    interface logDtuBusy extends id {
         mac: string
         stat: boolean
         n: number
@@ -663,7 +675,7 @@ declare namespace Uart {
         /**
          * 备注
          */
-         remark?:string
+        remark?: string
     }
 
 
