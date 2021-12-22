@@ -1,11 +1,11 @@
 {
   "name": "types-uart",
-  "version": "1.1.9",
+  "version": "2.0.1",
   "description": "",
   "types": "index.d.ts",
   "typeScriptVersion": "4.0",
   "scripts": {
-    "publish": "npm publish"
+    "qwqwqw": "npm publish"
   },
   "author": "",
   "license": "ISC",

@@ -7,31 +7,59 @@ declare namespace Uart {
     type protocolType = "ups" | "air" | "em" | "th";
     type characterType = "utf8" | "hex" | "float" | "short" | "int" | "HX" | 'bit2'
     type secretType = "mail" | "aliSms" | "hf" | "wxopen" | "wxmp" | "wxwp" | "wxmpValidaton"
+
     /**
-    * 密匙,第三方应用密匙
-    */
-    interface Secret_app {
-        type: secretType
-        appid: string
-        secret: string
-
-        _id?: string
-    }
-
+     * 数据库标识
+     */
     interface id {
         _id?: string
     }
 
     /**
+    * 密匙,第三方应用密匙
+    */
+    interface Secret_app extends id {
+        /**
+         * 三方服务类型
+         */
+        type: secretType
+        /**
+         * appid
+         */
+        appid: string
+        /**
+         * secret
+         */
+        secret: string
+    }
+
+
+
+    /**
      * token信息
      */
     interface Token {
+        /**
+         * token类型
+         */
         type: string,
+        /**
+         * token
+         */
         token: string,
+        /**
+         * 过期时间
+         */
         expires: number,
+        /**
+         * 生成时间
+         */
         creatTime: number
     }
 
+    /**
+     * mongo操作返回信息
+     */
     interface ApolloMongoResult {
         msg: string
         ok: number
@@ -54,53 +82,140 @@ declare namespace Uart {
 
     /**  协议指令解析格式化 */
     interface protocolInstructFormrize {
+        /**
+         * 参数名称
+         */
         name: string;
+        /**
+         * 参数英文名
+         */
         enName?: string;
+        /**
+         * 参数分割规则
+         * 2-2标识从解析数据第二位开始读取,长度2
+         */
         regx: string | null;
+        /**
+         * 系数,用于乘除读取的值
+         */
         bl: string;
+        /**
+         * 单位
+         */
         unit: string | null;
+        /**
+         * 是否是解析值{}
+         */
         isState: boolean;
     }
+
     /** 协议指令 */
     interface protocolInstruct {
-        name: string; // 指令名称--GQS
+        /**
+         * 指令名称--GQS
+         */
+        name: string;
+        /**
+         * 返回数据类型
+         */
         resultType: characterType;
+        /**
+         * 是否去头
+         */
         shift: boolean;
+        /**
+         * 去头长度
+         */
         shiftNum: number;
+        /**
+         * 是否去尾
+         */
         pop: boolean;
+        /**
+         * 去尾长度
+         */
         popNum: number;
+        /**
+         * 232 是否分割,默认空格分割
+         */
         isSplit: boolean
+        /**
+         * 解析规则原始字符串表达
+         */
         resize: string;
+        /**
+         * 解析规则
+         */
         formResize: protocolInstructFormrize[];
-        // 加入指令是否启用
+        /**
+         * 加入指令是否启用
+         */
         isUse: boolean,
-        // 非标协议
+        /**
+         * 非标协议
+         */
         noStandard: boolean,
-        // 前处理脚本
+        /**
+         * 前处理脚本
+         * @Func  function(pid,instruct)=>string
+         * 输入 pid和指令,函数处理字符串,返回正确指令
+         * @see const content = ('AA' + pid.toString(16).padStart(2, '0') + instruct).replace(/\s*\/g, '')
+            const num = 255 - (Buffer.from(content, 'hex').toJSON().data.reduce((pre, cur) => pre + cur))
+            const crc = Buffer.allocUnsafe(2)
+            crc.writeInt16BE(num, 0)
+            return content + crc.slice(1, 2).toString('hex').padStart(2, '0')
+         */
         scriptStart: string,
-        // 后处理脚本
+        /**
+         * 后处理脚本
+         * @Func  function(content,arr)=>boolen
+         * arr是设备返回的数据,content是指令
+         * arr[0] === 85
+         */
         scriptEnd: string
         /**
          * 备注
          */
         remark?: string
     }
+
     /** 协议 */
-    interface protocol {
+    interface protocol extends id {
+        /**
+         * 协议类型,232/485
+         */
         Type: communicationType;
+        /**
+         * 协议名称
+         */
         Protocol: string;
+        /**
+         * 设备类型
+         */
         ProtocolType: protocolType;
+        /**
+         * 协议指令
+         */
         instruct: protocolInstruct[];
         /**
          * 备注
          */
         remark?: string
-        _id?: string
     }
+
     /** 设备类型 */
-    interface DevsType {
+    interface DevsType extends id {
+        /**
+         * 设备类型
+         */
         Type: string;
+        /**
+         * 名称
+         */
         DevModel: string;
+        /**
+         * 包含协议
+         */
         Protocols: {
             Type: communicationType;
             Protocol: string;
@@ -109,10 +224,10 @@ declare namespace Uart {
          * 备注
          */
         remark?: string
-        _id?: string
     }
+
     /** 登记注册终端 */
-    interface RegisterTerminal {
+    interface RegisterTerminal extends id {
         /**
          * 设备mac
          */
@@ -129,14 +244,28 @@ declare namespace Uart {
          * 备注
          */
         remark?: string
-        _id?: string
     }
     /** 终端挂载设备 */
     interface TerminalMountDevs {
+        /**
+         * 设备类型
+         */
         Type: string
+        /**
+         * 在线状态
+         */
         online?: boolean
+        /**
+         * 设备名称
+         */
         mountDev: string;
+        /**
+         * 设备协议
+         */
         protocol: string;
+        /**
+         * 设备地址
+         */
         pid: number;
         /**
          * 绑定安装设备编号Í
@@ -195,34 +324,111 @@ declare namespace Uart {
     }
     /** 终端 */
     interface Terminal extends RegisterTerminal {
-        _id: string
+        /**
+         * 标签
+         */
         tag?: string[];
+        /**
+         * mac/IMEI
+         */
         DevMac: string
+        /**
+         * 在线状态
+         */
         online?: boolean
+        /**
+         * 禁用状态
+         */
         disable?: boolean
+        /**
+         * 挂载节点
+         */
         mountNode: string
+        /**
+         * 模块名称
+         */
         name: string;
+        /**
+         * 模块ip
+         */
         ip?: string
+        /**
+         * 模块端口
+         */
         port?: number
-
+        /**
+         * AT指令支持
+         * @link https://www.ladishb.com//upload/8_7_2021_4G_2G_NB_DTU%E4%BA%A7%E5%93%81%E5%8A%9F%E8%83%BD.pdf
+         */
         AT?: boolean
+        /**
+         * 定位
+         */
         jw?: string;
+        /**
+         * 通讯参数
+         */
         uart?: string
+        /**
+         * 更新时间
+         */
         uptime?: string
+        /**
+         * 模块型号
+         */
         PID?: string,
+        /**
+         * 模块版本
+         */
         ver?: string,
+        /**
+         * 4g模块版本
+         */
         Gver?: string,
+        /**
+         * iot状态
+         */
         iotStat?: string,
+        /**
+         * sim卡卡号
+         */
         ICCID?: string
+        /**
+         * 挂载子设备
+         */
         mountDevs: TerminalMountDevs[];
+
+
 
         /**
          * iccid信息
          */
         iccidInfo?: iccidInfo
+
+        /**
+         * 设备是否分享
+         * 2.0.1
+         */
+        share?: boolean
+
+        /**
+         * 4g信号强度
+         * 2.0.1
+         */
+        signal?: number
     }
+
+    /**
+     * 挂载设备拓展
+     */
     interface TerminalMountDevsEX extends TerminalMountDevs {
+        /**
+         * mac
+         */
         TerminalMac: string
+        /**
+         * 查询间隔
+         */
         Interval: number
     }
 
@@ -232,36 +438,97 @@ declare namespace Uart {
     interface registerDev extends TerminalMountDevs {
         id: string
     }
+
     /** Node节点 */
-    interface NodeClient {
+    interface NodeClient extends id {
+        /**
+         * 节点名称
+         */
         Name: string;
+        /**
+         * 节点IP
+         */
         IP: string;
+        /**
+         * 节点监听端口
+         */
         Port: number;
+        /**
+         * 节点最大挂载数量
+         */
         MaxConnections: number;
+        /**
+         * 节点一挂在数量
+         */
         count?: number
         /**
          * 备注
          */
         remark?: string
-        _id?: string
     }
+
+
     /** 用户绑定设备 */
-    interface BindDevice {
+    interface BindDevice extends id {
+        /**
+         * 用户
+         */
         user: string
+        /**
+         * 环控设备
+         */
         ECs: string[]
-        UTs: Terminal[]
+        /**
+         * 分享的环控设备
+         */
+        ECsShare: string[]
+        /**
+         * 透传设备
+         */
+        UTs: string[]
+        /**
+         * 分享的透传设备
+         */
+        UTsShare: string[]
+        /**
+         * 聚合设备
+         */
         AGG: string[]
-        _id?: string
+        /**
+         * 分享的聚合设备
+         */
+        AGGShare: string[]
     }
 
     /** Node节点硬件top */
     interface SocketRegisterInfo {
+        /**
+         * 系统名称
+         */
         hostname: string;
+        /**
+         * 内存总量
+         */
         totalmem: string;
+        /**
+         * 空闲内存
+         */
         freemem: string;
+        /**
+         * cpu
+         */
         loadavg: number[];
+        /**
+         * 系统类型
+         */
         type: string;
+        /**
+         * 更新时间
+         */
         uptime: string;
+        /**
+         * 运行用户信息
+         */
         userInfo: {
             uid: number,
             gid: number,
@@ -270,39 +537,102 @@ declare namespace Uart {
             shell: string
         }
     }
+
     /** 对节点发出的协议查询指令 */
     interface queryObject {
+        /**
+         * mac
+         */
         mac: string;
+        /**
+         * 协议类型
+         */
         type: number;
+        /**
+         * 挂载设备名称
+         */
         mountDev: string
+        /**
+         * 协议
+         */
         protocol: string;
+        /**
+         * 设备地址
+         */
         pid: number;
+        /**
+         * 时间戳
+         */
         timeStamp: number;
+        /**
+         * 查询指令
+         */
         content: string | string[];
+        /**
+         * 查询间隔
+         */
         Interval: number
+        /**
+         * 查询耗时
+         */
         useTime: number
     }
+
     /** 协议查询结果解析存储结构 */
     interface queryResultArgument {
+        /**
+         * 参数名
+         */
         name: string;
+        /**
+         * 参数序列化值
+         */
         value: any;
+        /**
+         * 参数解析值
+         */
         parseValue: string;
+        /**
+         * 单位
+         */
         unit: string | null;
+        /**
+         * 是否是json值
+         */
         issimulate?: boolean
+        /**
+         * 是否告警
+         */
         alarm?: boolean
+        /**
+         * 别名
+         */
         alias?: string
     }
-    //
-    interface queryResultParse {
-        [x: string]: queryResultArgument
-    }
+
     /** 协议查询结果 */
     interface queryResult extends queryObject {
+        /**
+         * 查询指令
+         */
         contents: IntructQueryResult[]
+        /**
+         * 查询结果
+         */
         result?: queryResultArgument[];
+        /**
+         * 时间
+         */
         time?: string;
+        /**
+         * 消耗字节数,仅参考
+         */
         useBytes?: number
     }
+
+    /**
+     * 
+     */
     interface IntructQueryResult {
         content: string
         buffer: {
@@ -316,32 +646,87 @@ declare namespace Uart {
         num: number
     }
 
-    /** UartData数据 */
+    /** 
+     * UartData数据 
+     * 
+     * */
     interface uartData extends NodeClient {
         data: queryResult[]
     }
 
-    /** 透传 api 数据   */
+    /** 
+     * 透传 api 数据  
+     * 透传模块参数
+     * */
     interface socketNetInfo {
+        /**
+         * ip
+         */
         ip: string;
+        /**
+         * 端口
+         */
         port: number;
+        /**
+         * mac
+         */
         mac: string;
+        /**
+         * 定位
+         */
         jw: string;
+        /**
+         * 通讯参数
+         */
         uart: string
+        /**
+         * at支持
+         */
         AT: boolean
+        /**
+         * sim卡号
+         */
         ICCID: string
+        /**
+         * 连接状态
+         */
         connecting: boolean,
+        /**
+         * 透传查询锁状态
+         */
         lock: boolean
+        /**
+         * 模块型号
+         */
         PID: string
+        /**
+         * 固件版本
+         */
         ver: string
+        /**
+         * 4G固件版本
+         */
         Gver: string
+        /**
+         * iot信息,默认关闭iot
+         */
         iotStat: string
 
     }
+
     /** 节点websocket透传信息 */
     interface WebSocketInfo {
+        /**
+         * 节点名称
+         */
         NodeName: string;
+        /**
+         * 节点连接数
+         */
         Connections: number | Error;
+        /**
+         * 
+         */
         SocketMaps: socketNetInfo[];
     }
     /** 节点上传信息 */
@@ -360,21 +745,62 @@ declare namespace Uart {
     type registerType = "wx" | "web" | "app" | "pesiv"
 
     /** 用户信息 */
-    interface UserInfo {
+    interface UserInfo extends id {
+        /**
+         * 头像链接
+         */
         avanter?: string
+        /**
+         * 用户id
+         */
         userId: string
+        /**
+         * 昵称
+         */
         name?: string;
+        /**
+         * 用户名
+         */
         user: string;
+        /**
+         * 用户组
+         */
         userGroup?: string;
+        /**
+         * 密码
+         */
         passwd?: string;
+        /**
+         * 邮件
+         */
         mail?: string;
+        /**
+         * 组织
+         */
         company?: string;
+        /**
+         * 电话
+         */
         tel?: number;
+        /**
+         * 创建时间
+         */
         creatTime?: Date;
+        /**
+         * 修改时间,每次登录会变更
+         */
         modifyTime?: Date;
+        /**
+         * 登录ip
+         */
         address?: string;
+        /**
+         * 启用状态
+         */
         status?: boolean;
-        // 注册类型
+        /**
+         * 注册类型
+         */
         rgtype: registerType
         /**
          * 小程序id
@@ -396,157 +822,403 @@ declare namespace Uart {
          * 备注
          */
         remark?: string
-        _id?: string
     }
 
-    // 设备协议参数-常量
+    /**
+     * 设备协议参数-常量
     // 空调
+     */
     interface DevConstant_Air {
+        /**
+         * 开关
+         */
         Switch: string
+        /**
+         * 工作模式
+         */
         WorkMode: string
-        //热通道温度
+        /**
+         * 热通道温湿度
+         */
         HeatChannelTemperature: string;
         HeatChannelHumidity: string;
-        //冷通道湿度
+        /**
+         * 冷通道温湿度
+         */
         ColdChannelTemperature: string;
         ColdChannelHumidity: string;
-        //制冷温度
+        /**
+         * 制冷温度
+         */
         RefrigerationTemperature: string;
         RefrigerationHumidity: string;
-        // 风速
+        /**
+         * 风速
+         */
         Speed: string;
     }
-    // EM
+
+    /**
+     * EM
+     */
     interface DevConstant_EM {
+        /**
+         * 电量
+         */
         battery: string
+        /**
+         * 电压
+         */
         voltage: string[],
+        /**
+         * 电流
+         */
         current: string[],
+        /**
+         * 频率
+         */
         factor: string[]
     }
-    // UPS
+
+    /**
+     * UPS
+     */
     interface DevConstant_Ups {
+        /**
+         * 开关
+         */
         Switch: string
+        /**
+         * 工作模式
+         */
         WorkMode: string
+        /**
+         * ups状态
+         */
         UpsStat: string[]
+        /**
+         * 电池状态
+         */
         BettyStat: string[]
+        /**
+         * 输入状态
+         */
         InputStat: string[]
+        /**
+         * 输出状态
+         */
         OutStat: string[]
     }
-    // TH
+    /**
+     * TH
+     */
     interface DevConstant_TH {
+        /**
+         * 温度
+         */
         Temperature: string;
+        /**
+         * 湿度
+         */
         Humidity: string;
     }
-    // IO
+    /**
+     * IO
+     */
     interface DevConstant_IO {
+        /**
+         * di
+         */
         di: string[];
+        /**
+         * do
+         */
         do: string[];
     }
-    interface DevConstant extends DevConstant_Air, DevConstant_EM, DevConstant_TH, DevConstant_Ups, DevConstant_IO {
+
+    /**
+     * 设备定义常量
+     */
+    interface DevConstant extends DevConstant_Air, DevConstant_EM, DevConstant_TH, DevConstant_Ups, DevConstant_IO, id {
         /**
          * 备注
          */
         remark?: string
-        _id?: string
     }
-    // 协议参数阀值
+
+    /**
+     * 协议参数阀值
+     */
     interface Threshold {
+        /**
+         * 参数名
+         */
         name: string
+        /**
+         * 最小值
+         */
         min: number
+        /**
+         * 最大值
+         */
         max: number
     }
-    // 协议参数告警状态
+
+    /**
+     * 协议参数告警状态
+     */
     interface ConstantAlarmStat extends queryResultArgument {
+        /**
+         * 告警状态
+         */
         alarmStat: string[]
     }
-    // 协议操作指令
+
+    /**
+     * 协议操作指令
+     */
     interface OprateInstruct {
+        /**
+         * 备注名
+         */
         name: string
+        /**
+         * 指令值
+         * @see 例子:060001%i,占位符%i是发送指令是设定的值,232协议默认不包含占位符
+         */
         value: string
+        /**
+         * 系数
+         */
         bl: string
+        /**
+         * 用户自定义值
+         */
         val?: number
+        /**
+         * 指令说明
+         */
         readme: string
+        /**
+         * 指令标签
+         */
         tag: string
     }
-    // 协议参数-常量参数阀值
+    /**
+     * 协议参数-常量参数阀值
+     */
     interface ProtocolConstantThreshold {
+        /**
+         * 协议
+         */
         Protocol: string,
+        /**
+         * 协议类型
+         */
         ProtocolType: string,
+        /**
+         * 协议常量参数
+         */
         Constant: DevConstant
+        /**
+         * 协议约束配置
+         */
         Threshold: Threshold[]
+        /**
+         * 协议约束告警配置
+         */
         AlarmStat: ConstantAlarmStat[]
+        /**
+         * 协议参数显示约束
+         */
         ShowTag: string[]
+        /**
+         * 协议支持操作指令
+         */
         OprateInstruct: OprateInstruct[]
     }
+    /**
+     * 别名
+     */
     interface alias {
         name: string,
         alias: string
     }
-    // 相同设备下的参数字段别名
+
+    /**
+     * 相同设备下的参数字段别名
+     */
     interface DevArgumentAlias {
         mac: string,
         pid: number,
         protocol: string,
         alias: alias[]
     }
-    // 用户自定义配置
+
+    /**
+     * 用户自定义配置
+     */
     interface userSetup {
+        /**
+         * 用户名
+         */
         user: string
+        /**
+         * 告警联系手机号
+         */
         tels: string[]
+        /**
+         * 告警联系邮箱
+         */
         mails: string[]
+        /**
+         * 告警推送微信
+         */
+        wxs: string[]
+        /**
+         * 告警参数设置
+         */
         ProtocolSetup: ProtocolConstantThreshold[]
         ProtocolSetupMap: Map<string, ProtocolConstantThreshold>
         ShowTagMap: Map<string, Set<string>>
         ThresholdMap: Map<string, Map<string, Threshold>>
         AlarmStateMap: Map<string, Map<string, ConstantAlarmStat>>
     }
-    // 协议解析结果集
-    interface queryResultSave {
-        [x: string]: any;
+
+    /**
+     * 协议解析结果集
+     */
+    interface queryResultSave extends Record<string, any> {
+        /**
+         * mac
+         */
         mac: string
+        /**
+         * 地址
+         */
         pid: number
+        /**
+         * 时间戳
+         */
         timeStamp: number
+        /**
+         * 设备数据
+         */
         result: queryResultArgument[]
-        parse: queryResultParse
-        Interval: number,
-        useTime: number,
+        /**
+         * 查询间隔
+         */
+        Interval: number
+        /**
+         * 耗时
+         */
+        useTime: number
+        /**
+         * 
+         */
         time: string
     }
+
+    /**
+     * 告警类型
+     */
     type ConstantThresholdType = "Threshold" | "Constant" | "ShowTag" | "Oprate" | "AlarmStat"
-    // 操作指令查询对象
+
+    /**
+     * 操作指令查询对象
+     */
     interface instructQueryArg extends queryResultArgument {
         DevMac: string
         pid: number,
         mountDev: string
         protocol: string
     }
-    // 操作指令请求对象
+
+    /**
+     * 操作指令请求对象
+     */
     interface instructQuery {
+        /**
+         * 协议
+         */
         protocol: string
+        /**
+         * mac
+         * 
+         */
         DevMac: string
+        /**
+         * 设备地址
+         */
         pid: number
+        /**
+         * 协议类型
+         */
         type: number
+        /**
+         * 唯一事件字符串,用于接受返回事件
+         */
         events: string
+        /**
+         * 指令
+         */
         content: string
+        /**
+         * 查询结果
+         */
         result?: Buffer
+        /**
+         * 查询间隔
+         */
         Interval?: number
     }
 
-    // 透传设备告警对象
+    /**
+     * 透传设备告警对象
+     */
     interface uartAlarmObject {
+        /**
+         * 告警信息原始数据_id
+         */
         parentId?: string
+        /**
+         * mac
+         */
         mac: string
+        /**
+         * 设备名称
+         */
         devName: string
         pid: number
+        /**
+         * 协议
+         */
         protocol: string
+        /**
+         * 标签
+         */
         tag: string
+        /**
+         * 时间戳
+         */
         timeStamp: number
+        /**
+         * 消息
+         */
         msg: string
+        /**
+         * 确认状态
+         */
         isOk?: boolean
     }
 
-    // 单条发送短信
+    /**
+     * 单条发送短信
+     */
     type UartAlarmType = "透传设备下线提醒" | "透传设备上线提醒" | '透传设备告警'
+    /**
+     * 
+     */
     interface smsUartAlarm {
         parentId?: string
         user: string
@@ -557,27 +1229,51 @@ declare namespace Uart {
         event?: string
         type: UartAlarmType
     }
-    // LOG 日志
+
+    /**
+     * LOG 日志
     // 短信发送
+     */
     interface logSmsSend extends id {
+        /**
+         * 手机号
+         */
         tels: string[]
+        /**
+         * 发送参数
+         */
         sendParams: {
+            /**
+             * 
+             */
             RegionId: string
             PhoneNumbers: string
             SignName: string
             TemplateCode: string
             TemplateParam: String
         },
+        /**
+         * 发送结果
+         */
         Success?: {
             Message: string
             RequestId: string
             BizId: string
             Code: string
         },
+        /**
+         * 报错信息
+         */
         Error?: any
     }
-    // 邮件
+
+    /**
+     * 邮件发送结果
+     */
     interface mailResponse {
+        /**
+         * 邮箱s
+         */
         accepted: string[]
         rejected: string[],
         envelopeTime: number
@@ -588,75 +1284,231 @@ declare namespace Uart {
         messageId: string
     }
 
+    /**
+     * 邮件log
+     */
     interface logMailSend extends id {
+        /**
+         * 邮箱s
+         */
         mails: string[]
+        /**
+         * 发送参数
+         */
         sendParams: {
+            /**
+             *发送人
+             */
             from: string
+            /**
+             * 接受人
+             */
             to: string
+            /**
+             * 主题
+             */
             subject: string
+            /**
+             * 消息实体,html格式字符串
+             */
             html: string
         }
+        /**
+         * 返回信息
+         */
         Success?: mailResponse
+        /**
+         * 报错信息
+         */
         Error?: any
     }
-    // 操作请求
+
+    /**
+     * 操作请求
+     */
     interface logUserRequst extends id {
+        /**
+         * 用户
+         */
         user: string,
+        /**
+         * 用户组
+         */
         userGroup: string,
+        /**
+         * api路径
+         */
         type: string,
+        /**
+         * 参数
+         */
         argument?: any
     }
+
+    /**
+     * 用户操作类型
+     */
     type logLogins = "用户登陆" | '用户登出' | '用户注册' | "用户重置密码" | "用户修改信息"
-    // 用户登陆登出请求
+
+    /**
+     * 用户登陆登出请求log
+     */
     interface logUserLogins extends id {
+        /**
+         * 用户
+         */
         user: string,
+        /**
+         * 类型
+         */
         type: logLogins,
+        /**
+         * 地址
+         */
         address: string
+        /**
+         * 消息
+         */
         msg: string
     }
-    // 节点连接断开等事件
+
+
+    /**
+     * 节点连接断开等事件
+     */
     type logNodesType = "连接" | "断开" | "上线" | "重新上线" | "非法连接请求" | "TcpServer启动失败" | "告警" | "重新连接" | "节点断开" | "dtu主动断开" | "dtu断开"
+
+    /**
+     * 节点log
+     */
     interface logNodes extends id {
+        /**
+         * socketid
+         */
         ID: string
+        /**
+         * ip
+         */
         IP: string
+        /**
+         * 节点名称
+         */
         Name: string
+        /**
+         * 事件类型
+         */
         type: logNodesType
     }
-    // 终端连接
+
+    /**
+     * 终端连接
+     */
     type logTerminalsType = "连接" | "断开" | "查询超时" | "查询恢复" | "操作设备" | "操作设备结果" | 'DTU操作' | "重新连接" | "节点断开" | "dtu主动断开" | "dtu断开"
+
+    /**
+     * 终端log
+     */
     interface logTerminals extends id {
+        /**
+         * 节点ip
+         */
         NodeIP: string
+        /**
+         * 节点名称
+         */
         NodeName: string
+        /**
+         * mac
+         */
         TerminalMac: string
+        /**
+         * 事件类型
+         */
         type: logTerminalsType
+        /**
+         * 消息
+         */
         msg?: string
+        /**
+         * 参数
+         */
         query?: any
+        /**
+         * 结果
+         */
         result?: any
+        /**
+         * 创建时间
+         */
         createdAt?: Date
     }
 
-    // 设备流量使用量
+    /**
+     * 设备流量使用量
+     */
     interface logTerminaluseBytes extends id {
+        /**
+         * mac
+         */
         mac: string
+        /**
+         * 日期
+         */
         date: string
+        /**
+         * 使用流量
+         */
         useBytes: number
     }
 
-    // 设备流量使用量
+    /**
+     * 透传模块状态变更
+     * 
+     *      */
     interface logDtuBusy extends id {
+        /**
+         * mac
+         */
         mac: string
+        /**
+         * 状态
+         */
         stat: boolean
+        /**
+         * 
+         */
         n: number
+        /**
+         * 时间戳
+         */
         timeStamp: number
     }
 
-    // 聚合设备
+    /**
+     * 聚合设备
+     */
     interface AggregationDev extends TerminalMountDevs {
+        /**
+         * 参数结果
+         */
         result: queryResultArgument[] | undefined;
+        /**
+         * 设备
+         */
         DevMac: string
+        /**
+         * 昵称
+         */
         name: string
+        /**
+         * 状态
+         */
         online: boolean
     }
+
+    /**
+     * 
+     */
     interface AggregationDevParse {
         pid: number,
         DevMac: string,
@@ -666,11 +1518,30 @@ declare namespace Uart {
         protocol: string,
         parse: { [x: string]: queryResultArgument }
     }
+
+    /**
+     * 用户挂载聚合设备
+     */
     interface Aggregation {
+        /**
+         * 用户
+         */
         user: string
+        /**
+         * id
+         */
         id: string
+        /**
+         * 名称
+         */
         name: string
+        /**
+         * 
+         */
         aggregations: AggregationDev[]
+        /**
+         * 聚合设备包含的dtu
+         */
         devs: AggregationDevParse[]
         /**
          * 备注
@@ -681,36 +1552,89 @@ declare namespace Uart {
 
 
 
-    type AT = 'Z' | 'VER' | 'UART=1' | 'LOCATE=1' | 'IMEI' | 'ICCID' | 'IMSI'
-    // 操作指令请求对象
+    /**
+     * 操作指令请求对象
+     */
     interface DTUoprate {
+        /**
+         * mac
+         */
         DevMac: string
+        /**
+         * 事件对象
+         */
         events: string
-        content: AT | string
+        /**
+         * 指令
+         */
+        content: string
+        /**
+         * 结果
+         */
         result?: string
     }
 
-    // agg聚合设备布局对象
+    /**
+     * agg聚合设备布局对象
+     */
     interface AggregationLayoutNode {
+        /**
+         * 定位x
+         */
         x: number
+        /**
+         * 定位y
+         */
         y: number
+        /**
+         * id
+         */
         id: string
+        /**
+         * 参数别名
+         */
         name: string
+        /**
+         * 绑定参数
+         */
         bind: {
             mac: string,
             pid: number,
             name: string
         }
+        /**
+         * 颜色
+         */
         color: string
+        /**
+         * 参数结果
+         */
         result?: queryResultArgument
     }
 
-    // 用户布局设置
+    /**
+     * 用户布局设置
+     */
     interface userLayout {
+        /**
+         * 用户
+         */
         user: string,
+        /**
+         * 类型
+         */
         type: string,
+        /**
+         * id
+         */
         id: string,
+        /**
+         * 背景图片信息
+         */
         bg: string,
+        /**
+         * 布局信息
+         */
         Layout: AggregationLayoutNode[]
     }
     /**
@@ -1224,65 +2148,6 @@ declare namespace Uart {
          */
         interface urlSchemeRequest extends wxRequest {
             openlink: string
-        }
-    }
-
-    namespace AMap {
-        interface statu {
-            status: "0" | "1",
-            info: "OK" | string,
-            infocode: "10000" | string
-        }
-
-        interface ip2parameters extends statu {
-            province: string,
-            city: string
-            adcode: string
-            rectangle: string
-        }
-
-        interface convert extends statu {
-            locations: string
-        }
-    }
-
-    namespace VeChart {
-        interface unit {
-            name: string
-            data: number | number[] | any
-        }
-        interface stand {
-            dimensions?: {
-                name: string
-                data: (string | number)[]
-            }
-            measures: unit[]
-        }
-
-        interface line extends stand {
-            dimensions: {
-                name: string
-                data: (string | number)[]
-            }
-            measures: {
-                name: string
-                data: number[]
-            }[]
-        }
-
-        type pie = line
-        interface guageData extends stand {
-            dimensions?: {
-                name: string
-                data: (string | number)[]
-            }
-            measures: {
-                name: string
-                data: {
-                    name: string,
-                    value: number
-                }[]
-            }[]
         }
     }
 }
