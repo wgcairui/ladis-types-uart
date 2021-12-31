@@ -498,6 +498,11 @@ declare namespace Uart {
          * 分享的聚合设备
          */
         AGGShare: string[]
+
+        bind?: {
+            UTs: Terminal[],
+            [x: string]: any
+        }
     }
 
     /** Node节点硬件top */
@@ -1122,7 +1127,7 @@ declare namespace Uart {
     /**
      * 告警类型
      */
-    type ConstantThresholdType = "Threshold" | "Constant" | "ShowTag" | "Oprate" | "AlarmStat"
+    type ConstantThresholdType = "Threshold" | "Constant" | "ShowTag" | "OprateInstruct" | "AlarmStat"
 
     /**
      * 操作指令查询对象
