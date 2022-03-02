@@ -4,7 +4,7 @@ declare namespace Uart {
 
     /** protocol */
     type communicationType = 232 | 485;
-    type protocolType = "ups" | "air" | "em" | "th";
+    type protocolType = "ups" | "air" | "em" | "th" | 'io';
     type characterType = "utf8" | "hex" | "float" | "short" | "int" | "HX" | 'bit2'
     type secretType = "mail" | "aliSms" | "hf" | "wxopen" | "wxmp" | "wxwp" | "wxmpValidaton"
 
@@ -321,6 +321,10 @@ declare namespace Uart {
          * 资源总量 ，流量单位为KB
          */
         flowResource: number
+        /**
+         * 
+         */
+        version: string
     }
     /** 终端 */
     interface Terminal extends RegisterTerminal {
