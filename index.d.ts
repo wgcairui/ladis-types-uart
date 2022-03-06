@@ -1240,6 +1240,40 @@ declare namespace Uart {
     }
 
     /**
+     * 站内信记录
+     */
+    interface logInnerMessages extends id {
+        timeStamp: number;
+        /**
+         * 用户
+         */
+        user?: string;
+        /**
+         * 用户昵称
+         */
+        nikeName?: string;
+        /**
+         * 设备mac
+         */
+        mac?: string;
+        /**
+         * 设备pid
+         */
+        page?: number;
+
+        /**
+         * 数据
+         */
+        data?: Record<string, any>
+
+        /**
+         * 消息
+         */
+        message: string;
+
+    }
+
+    /**
      * LOG 日志
     // 短信发送
      */
