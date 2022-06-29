@@ -282,9 +282,13 @@ declare namespace Uart {
          */
         statu: boolean
         /**
+         * 自动续费
+         */
+        IsAutoRecharge:boolean
+        /**
          * 语音套餐总量，以分钟为单位
          */
-        voiceTotal: number,
+        // voiceTotal: number,
         /**
          * 	资源失效日期
          */
@@ -296,7 +300,7 @@ declare namespace Uart {
         /**
          * 资源类型编码。6700001代表流量
          */
-        resourceType: string,
+        //resourceType: string,
         /**
          * 资源使用量，流量单位为KB
          */
@@ -308,21 +312,21 @@ declare namespace Uart {
         /**
          * 短信使用量。以条为单位
          */
-        smsUsed: number,
+        // smsUsed: number,
         /**
          * 资源生效日期
          */
-        validDate: string,
+        // validDate: string,
         /**
          * 语音使用量，以分钟为单位
          */
-        voiceUsed: number,
+        // voiceUsed: number,
         /**
          * 资源总量 ，流量单位为KB
          */
         flowResource: number
         /**
-         * 
+         * 版本
          */
         version: string
     }
