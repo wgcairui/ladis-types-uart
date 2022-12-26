@@ -1,6 +1,6 @@
 {
   "name": "types-uart",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "",
   "types": "index.d.ts",
   "typeScriptVersion": "4.0",
