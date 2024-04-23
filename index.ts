@@ -1176,7 +1176,7 @@ declare namespace Uart {
         /**
          * 查询结果
          */
-        result?: Buffer
+        result?: ArrayBuffer
         /**
          * 查询间隔
          */
