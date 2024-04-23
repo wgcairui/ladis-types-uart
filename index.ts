@@ -1,6 +1,4 @@
 declare namespace Uart {
-
-
     /** protocol */
     type communicationType = 232 | 485;
     type protocolType = "ups" | "air" | "em" | "th" | 'io';
